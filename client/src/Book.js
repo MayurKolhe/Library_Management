@@ -38,7 +38,8 @@ const Book = () => {
           "content-type": "Application/json",
         },
       });
-      const data = await response.json();
+        const data = await response.json();
+        console.log(data);
       if (data.length > 0) {
         setBorrowedBooks(data.filter((book) => book.status === "borrowed"));
         setReturnedBooks(data.filter((book) => book.status === "returned"));
@@ -141,7 +142,6 @@ const Book = () => {
               ) : (
           returnedBooks.map((book) => (
               <div key={book.id} className="mb-2">
-                  {console.log(returnedBooks)}
               <h2>Book Name: {book.bookname}</h2>
               <h5>Books Taken on: {book.date}</h5>
               <h5>Books Return Date: {book.return}</h5>

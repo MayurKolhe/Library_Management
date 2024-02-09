@@ -9,7 +9,7 @@ exports.addBook = async (req, res, next) => {
 
   try {
     const returnDate = new Date();
-    returnDate.setMinutes(returnDate.getMinutes() + 1);
+    returnDate.setHours(returnDate.getHours() + 1);
 
     const newBook = await Books.create({
       bookname,
@@ -35,17 +35,20 @@ exports.getBooks = async (req, res, next) => {
         const currentDate = new Date();
         const hourOverDue = Math.max(
           0,
-          (currentDate - returnDate) / (100 * 60 * 60)
+          (currentDate - returnDate) / (1000 * 60 * 60)
         );
         const lateFee = hourOverDue * 10;
-        book.lateFee = lateFee;
+        book.fine = lateFee;
       }
+
+      let currentFine = Number(book.fine);
+      book.fine = currentFine.toFixed(2).toString();
       return {
         id: book.id,
         date: book.date,
         bookname: book.bookname,
         return: book.return,
-        lateFee: book.lateFee,
+        lateFee: book.fine,
         status: book.status,
       };
     });
@@ -57,9 +60,7 @@ exports.getBooks = async (req, res, next) => {
 };
 
 exports.returnBook = async (req, res, next) => {
-  console.log(req.body);
   const { bookId, fine } = req.body;
-  console.log(fine)
   try {
     const bookData = await Books.findByPk(bookId);
     if (bookData) {
